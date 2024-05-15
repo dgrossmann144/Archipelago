@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import Option, Toggle, Range, PerGameCommonOptions
+from Options import Toggle, Range, PerGameCommonOptions
 
 class TitaniaPiecesRequired(Range):
     """How many pieces of Titania are required to complete the game."""

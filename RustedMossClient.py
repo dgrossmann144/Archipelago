@@ -4,25 +4,15 @@ import typing
 
 import Utils
 
+from NetUtils import NetworkItem
 from CommonClient import ClientCommandProcessor, CommonContext, \
     server_loop, get_base_parser, gui_enabled
 
-# TODO figure out save file association
-
+# TODO add commands for patching, setting save directory, and syncing
 class RustedMossCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    def _cmd_test(self):
-        print("context items_received")
-        print(self.ctx.items_received)
-        print("context server_locations")
-        print(self.ctx.server_locations)
-        print("context checked_locations")
-        print(self.ctx.checked_locations)
-
-
-    # TODO add commands for patching, setting save directory, and syncing?
 
 class RustedMossContext(CommonContext):
     tags = {"AP"}
@@ -52,14 +42,11 @@ class RustedMossContext(CommonContext):
     def clear_rusted_moss_files(self):
         path = self.save_game_folder
         self.finished_game = False
-        # TODO clear files that game? or self? write
-        # for root, dirs, files in os.walk(path):
-        #     for file in files:
-        #         if "check.spot" == file or "scout" == file:
-        #             os.remove(os.path.join(root, file))
-        #         elif file.endswith((".item", ".victory", ".route", ".playerspot", ".mad", 
-        #                                     ".youDied", ".LV", ".mine", ".flag", ".hint")):
-        #             os.remove(os.path.join(root, file))
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                # TODO verify what files exactly should be cleared
+                if file in ["deathlinkFromClient", "deathlinkFromServer", "scoutLocations", "checkedLocations", "endingCompleted", "receivedItems"]:
+                    os.remove(os.path.join(root, file))
 
     async def connect(self, address: typing.Optional[str] = None):
         self.clear_rusted_moss_files()
@@ -100,14 +87,20 @@ class RustedMossContext(CommonContext):
 
 async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
     # TODO handle server commands https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md#server---client
+    print("cmd: " + cmd)
+    print("args:")
+    print(args)
     if cmd == "Connected":
         if not os.path.exists(ctx.save_game_folder):
             os.mkdir(ctx.save_game_folder)
         ctx.deathlink_status = args["slot_data"]["deathlink"]
-        ctx.update_death_link(ctx.deathlink_status)
+        await ctx.update_death_link(ctx.deathlink_status)
         ctx.titania_pieces_required = args["slot_data"]["titania_pieces_required"]
         ctx.hard_maya = args["slot_data"]["hard_maya"]
-        print(args["checked_locations"])
+        with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "w") as f:
+            for location in args["checked_locations"]:
+                f.write(str(location) + "\n")
+            f.close()
     elif cmd == "LocationInfo":
         # TODO investigate scout handling
         pass
@@ -118,8 +111,26 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
         # TODO only if send Set command
         pass
     elif cmd == "ReceivedItems":
-        # TODO implement
+        start_index = args["index"]
+
+        if start_index == 0:
+            ctx.items_received = []
+        elif start_index != len(ctx.items_received):
+            sync_msg = [{"cmd": "Sync"}]
+            if ctx.locations_checked:
+                sync_msg.append({"cmd": "LocationChecks", "locations": list(ctx.locations_checked)})
+            await ctx.send_msgs(sync_msg)
+        if start_index == len(ctx.items_received):
+            with open(os.path.join(ctx.save_game_folder, "receivedItems"), "w") as f:
+                for item in args["items"]:
+                    networkItem = NetworkItem(*item)
+                    f.write(str(networkItem.item) + "\n")
+                    ctx.items_received.append(networkItem)
+                f.close()
+    elif cmd == "RoomUpdate":
+        # TODO write to file which game will use to pull already checked locations on game load
         pass
+
 
 async def game_watcher(ctx: RustedMossContext):
     while not ctx.exit_event.is_set():
@@ -128,39 +139,40 @@ async def game_watcher(ctx: RustedMossContext):
             with open(os.path.join(ctx.save_game_folder, "deathlinkFromServer"), "w") as f:
                 f.close()
         
+        sending = []
         for root, dirs, files in os.walk(ctx.save_game_folder):
             for file in files:
                 if "deathlinkFromClient" in file:
-                    os.remove(os.path.join(root, file))
                     if "DeathLink" in ctx.tags:
                         await ctx.send_death()
+                    os.remove(os.path.join(root, file))
                 if "scoutLocations" == file:
-                    sending = []
                     try:
                         with open(os.path.join(root, file), "r") as f:
                             locations = f.readlines()
                         for location in locations:
-                            # TODO translate between written locations and id below
-                            if location in ctx.server_locations:
-                                sending.append(location)
+                            # TODO translate from what the game writes to location id
+                            if int(location) in ctx.server_locations:
+                                sending.append(int(location))
                     finally:
                         await ctx.send_msgs([{"cmd": "LocationScouts", "locations": sending, "create_as_hint": 2}])
                         os.remove(os.path.join(root, file))
                 if "checkLocations" == file:
-                    sending = []
                     try:
                         with open(os.path.join(root, file), "r") as f:
                             locations = f.readlines()
                         for location in locations:
-                            # TODO translate between written locations and id below
-                            if location in ctx.server_locations:
-                                sending.append(location)
+                            # TODO translate from what the game writes to location id
+                            if int(location) in ctx.server_locations:
+                                sending.append(int(location))
                     finally:
                         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": sending}])
                         os.remove(os.path.join(root, file))
                 if "endingCompleted" == file:
                     # TODO ending file format and yaml options
                     pass
+
+        ctx.locations_checked = sending
 
         await asyncio.sleep(0.1)
 

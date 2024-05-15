@@ -1,5 +1,5 @@
+from typing import Dict, Any
 from worlds.AutoWorld import World
-from worlds.generic.Rules import set_rule
 from BaseClasses import Region
 
 from .Items import RustedMossItem, item_dict
@@ -36,3 +36,12 @@ class RustedMossWorld(World):
         for item_key, item_value in item_dict.items():
             for count in range(item_value[1]):
                 self.multiworld.itempool.append(self.create_item(item_key))
+
+    def fill_slot_data(self) -> Dict[str, Any]:
+        return {
+            "titania_pieces_required": self.options.titania_pieces_required.value,
+            "hard_maya": self.options.hard_maya.value,
+            "deathlink": self.options.deathlink.value,
+        }
+
+
