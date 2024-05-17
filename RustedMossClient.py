@@ -119,8 +119,7 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
             with open(os.path.join(ctx.save_game_folder, "receivedItems"), "w") as f:
                 for index, item in enumerate(ctx.items_received):
                     f.write(str(index) + "\n")
-                    # TODO translate from item ID to item name
-                    f.write(str(item.item) + "\n")
+                    f.write(str(ctx.item_names[item.item]) + "\n")
                 f.close()
     elif cmd == "RoomUpdate":
         # TODO handle location getting marked as checked from server

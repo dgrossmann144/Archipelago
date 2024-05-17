@@ -9,11 +9,12 @@ item_dict = {
     "Infinite_Grapple": (ItemClassification.progression, 1),
     "Charge_Jump": (ItemClassification.progression, 1),
     "Grenade": (ItemClassification.progression, 1),
-    "Titania_Piece": (ItemClassification.progression, 8), # 8
-    "HP_UP": (ItemClassification.useful, 7), # 7
-    "MP_UP": (ItemClassification.useful, 9), # 9
-    "TP_UP": (ItemClassification.useful, 9), # 9
-    "Fae_Silver": (ItemClassification.useful, 17), # 17
+    "Titania_Piece": (ItemClassification.progression, 8),
+    "HP_UP": (ItemClassification.useful, 7),
+    "MP_UP": (ItemClassification.useful, 9),
+    "TP_UP": (ItemClassification.useful, 9),
+    "Fae_Silver": (ItemClassification.useful, 17),
+    "Flag": (ItemClassification.useful, 6),
     "Pistol": (ItemClassification.useful, 1),
     "Shotgun": (ItemClassification.progression, 1),
     "Rocket_Launcher": (ItemClassification.progression, 1),
