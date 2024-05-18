@@ -4,6 +4,9 @@ import typing
 
 import Utils
 
+from worlds.rusted_moss.Utils import gameLocationToLocationName
+from worlds import AutoWorldRegister
+from NetUtils import NetworkItem
 from CommonClient import ClientCommandProcessor, CommonContext, \
     server_loop, get_base_parser, gui_enabled
 
@@ -45,7 +48,8 @@ class RustedMossContext(CommonContext):
             for file in files:
                 # TODO verify what files exactly should be cleared
                 if file in ["deathlinkFromClient", "deathlinkFromServer", "checkedLocations", "receivedItems", "scoutLocations", "newLocations"]:
-                    os.remove(os.path.join(root, file))
+                    pass
+                    # os.remove(os.path.join(root, file))
 
     async def connect(self, address: typing.Optional[str] = None):
         self.clear_rusted_moss_files()
@@ -108,18 +112,22 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
 
         if start_index == 0:
             ctx.items_received = []
-            os.remove(os.path.join(ctx.save_game_folder, "receivedItems"))
+            try:
+                os.remove(os.path.join(ctx.save_game_folder, "receivedItems"))
+            except OSError:
+                pass
         elif start_index != len(ctx.items_received):
             sync_msg = [{"cmd": "Sync"}]
             if ctx.locations_checked:
                 sync_msg.append({"cmd": "LocationChecks", "locations": list(ctx.locations_checked)})
             await ctx.send_msgs(sync_msg)
         if start_index == len(ctx.items_received):
-            ctx.items_received.append(args["items"])
+            for item in args["items"]:
+                ctx.items_received.append(NetworkItem(*item))
             with open(os.path.join(ctx.save_game_folder, "receivedItems"), "w") as f:
                 for index, item in enumerate(ctx.items_received):
                     f.write(str(index) + "\n")
-                    f.write(str(ctx.item_names[item.item]) + "\n")
+                    f.write(ctx.item_names[item.item] + "\n")
                 f.close()
     elif cmd == "RoomUpdate":
         # TODO handle location getting marked as checked from server
@@ -145,9 +153,10 @@ async def game_watcher(ctx: RustedMossContext):
                         with open(os.path.join(root, file), "r") as f:
                             locations = f.readlines()
                         for location in locations:
-                            # TODO translate from what the game writes to location id
-                            if int(location) in ctx.server_locations:
-                                sending.append(int(location))
+                            locationName = gameLocationToLocationName[location.strip()]
+                            locationId = AutoWorldRegister.world_types[ctx.game].location_name_to_id[locationName]
+                            if locationId in ctx.server_locations:
+                                sending.append(locationId)
                     finally:
                         await ctx.send_msgs([{"cmd": "LocationScouts", "locations": sending, "create_as_hint": 2}])
                         os.remove(os.path.join(root, file))
@@ -156,12 +165,13 @@ async def game_watcher(ctx: RustedMossContext):
                         locations = []
                         with open(os.path.join(root, file), "r") as f:
                             locations = f.readlines()
-                        with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "w") as f:
+                        with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "a") as f:
                             for location in locations:
-                                # TODO translate from what the game writes to location id
-                                if int(location) in ctx.server_locations:
-                                    sending.append(int(location))
-                                    f.write(str(location) + "\n")
+                                locationName = gameLocationToLocationName[location.strip()]
+                                locationId = AutoWorldRegister.world_types[ctx.game].location_name_to_id[locationName]
+                                if locationId in ctx.server_locations:
+                                    sending.append(locationId)
+                                    f.write(str(locationId) + "\n")
                             f.close()
                     finally:
                         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": sending}])
