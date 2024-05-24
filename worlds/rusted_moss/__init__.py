@@ -81,6 +81,7 @@ class RustedMossWorld(World):
             "precise_movement": self.options.precise_movement.value,
             "precise_grapple": self.options.precise_grapple.value,
             "bunny_hopping": self.options.bunny_hopping.value,
+            "hard_combat": self.options.hard_combat.value,
         }
 
     def convert_to_rule(self, rule):

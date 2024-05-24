@@ -4,9 +4,9 @@ class RustedMossItem(Item):
     game: str = "Rusted Moss"
 
 item_dict = {
-    "Grappling_Hook": (ItemClassification.progression, 3),
-    # "Grappling_Hook_Upgrade": (ItemClassification.progression, 1),
-    # "Infinite_Grapple": (ItemClassification.progression, 1),
+    "Grappling_Hook": (ItemClassification.progression, 1),
+    "Grappling_Hook_Upgrade": (ItemClassification.progression, 1),
+    "Infinite_Grapple": (ItemClassification.progression, 1),
     "Charge_Jump": (ItemClassification.progression, 1),
     "Grenade": (ItemClassification.progression, 1),
     "Titania_Piece": (ItemClassification.progression, 8),
