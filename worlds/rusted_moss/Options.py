@@ -17,8 +17,34 @@ class Deathlink(Toggle):
     """Enable death link."""
     display_name = "Death Link"
 
+class DamageBoost(Toggle):
+    """Locations which require a damage boost to access will be considered in logic"""
+    display_name = "Damage Boost"
+
+class PreciseMovement(Toggle):
+    """Locations which require precise movement to access will be considered in logic"""
+    display_name = "Precise Movement"
+
+class PreciseGrapple(Toggle):
+    """Locations which require precise grappling hook usage to access will be considered in logic"""
+    display_name = "Precise Grapple"
+    default = 1
+
+class BunnyHopping(Toggle):
+    """Locations which require preservation of momentum through bunny hopping will be considered in logic"""
+    display_name = "Bunny Hopping"
+
+class HardCombat(Toggle):
+    """Locations which require more proficiency in combat to access will be considered in logic"""
+    display_name = "Hard Combat"
+
 @dataclass
 class RustedMossOptions(PerGameCommonOptions):
     titania_pieces_required: TitaniaPiecesRequired
     hard_maya: HardMaya
     deathlink: Deathlink
+    damage_boost: DamageBoost
+    precise_movement: PreciseMovement
+    precise_grapple: PreciseGrapple
+    bunny_hopping: BunnyHopping
+    hard_combat: HardCombat

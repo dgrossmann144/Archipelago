@@ -124,10 +124,12 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
         if start_index == len(ctx.items_received):
             for item in args["items"]:
                 ctx.items_received.append(NetworkItem(*item))
-            with open(os.path.join(ctx.save_game_folder, "receivedItems"), "w") as f:
+            with open(os.path.join(ctx.save_game_folder, "receivedItems"), "a") as f:
                 for index, item in enumerate(ctx.items_received):
                     f.write(str(index) + "\n")
                     f.write(ctx.item_names[item.item] + "\n")
+                f.close()
+            with open(os.path.join(ctx.save_game_folder, "newItems"), "w") as f:
                 f.close()
     elif cmd == "RoomUpdate":
         # TODO handle location getting marked as checked from server
@@ -152,6 +154,7 @@ async def game_watcher(ctx: RustedMossContext):
                     try:
                         with open(os.path.join(root, file), "r") as f:
                             locations = f.readlines()
+                            f.close()
                         for location in locations:
                             locationName = gameLocationToLocationName[location.strip()]
                             locationId = AutoWorldRegister.world_types[ctx.game].location_name_to_id[locationName]
