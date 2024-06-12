@@ -75,6 +75,11 @@ def extract_logic():
                     rules[line["to"]] = line["to"] + " | (" + line["from"] + requires + ")"
                 else:
                     rules[line["to"]] = rules[line["to"]] + " | (" + line["from"] + requires + ")"
+                # reverse transition to transition rule
+                if line["from"] not in rules:
+                    rules[line["from"]] = line["from"] + " | (" + line["to"] + requires + ")"
+                else:
+                    rules[line["from"]] = rules[line["from"]] + " | (" + line["to"] + requires + ")"
             elif line["to"] in location_list:
                 # transition to location rule
                 if line["to"] not in rules:

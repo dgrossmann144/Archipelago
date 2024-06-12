@@ -37,13 +37,15 @@ class RustedMossWorld(World):
     def create_item(self, item: str) -> RustedMossItem:
         return RustedMossItem(item, item_dict[item][0], self.item_name_to_id[item], self.player)
     
-    def create_event(self, name, region) -> RustedMossLocation:
-        event = RustedMossLocation(self.player, name, None, region)
-        event.place_locked_item(RustedMossItem(name, ItemClassification.progression, None, self.player))
+    def create_event(self, locationName, itemName, region) -> RustedMossLocation:
+        event = RustedMossLocation(self.player, locationName, None, region)
+        event.place_locked_item(RustedMossItem(itemName, ItemClassification.progression, None, self.player))
         return event
     
     def generate_early(self) -> None:
         (self.regions, self.exits, self.connectors, self.location_to_region, self.events, self.rules) = extract_logic()
+        # print(self.exits)
+        # print(self.connectors)
         self.multiworld.push_precollected(RustedMossItem("rm_start_0[100390]", ItemClassification.progression, None, self.player))
 
     def create_regions(self) -> None:
@@ -52,13 +54,12 @@ class RustedMossWorld(World):
         self.multiworld.regions.append(menu_region)
 
         for event in self.events:
-            eventLocation = self.create_event(event, menu_region)
+            eventLocation = self.create_event(event, event, menu_region)
             menu_region.locations.append(eventLocation)
 
-        for exits in self.exits.values():
-            for exit in exits:
-                eventLocation = self.create_event(exit, menu_region)
-                menu_region.locations.append(eventLocation)
+        for connectorFrom, connectorTo in self.connectors.items():
+            eventLocation = self.create_event(connectorFrom, connectorTo, menu_region)
+            menu_region.locations.append(eventLocation)
     
 
     def create_items(self) -> None:
@@ -76,6 +77,8 @@ class RustedMossWorld(World):
         lambda_string = "lambda state: "
         parts = rule.replace("(", "( ").replace(")", " )").split()
         for part in parts:
+            splitPart = part.split("{")
+
             if part in "()":
                 lambda_string += part
             elif part in "+":
@@ -84,6 +87,8 @@ class RustedMossWorld(World):
                 lambda_string += " or "
             elif part in item_dict.keys():
                 lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
+            elif splitPart[0] in item_dict.keys():
+                lambda_string += "state.count(\"" + splitPart[0] + "\", " + str(self.player) + ") >= " + splitPart[1].split("}")[0]
             elif part in asdict(self.options).keys():
                 lambda_string += "True" if asdict(self.options)[part] else "False"
             elif any(part in values for values in self.exits.values()):
