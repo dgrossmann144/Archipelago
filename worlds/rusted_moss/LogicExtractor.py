@@ -21,7 +21,7 @@ def extract_logic():
     rules: dict[str, str] = {}
 
     rusted_moss_world_folder = os.path.dirname(__file__)
-    with open(os.path.join(rusted_moss_world_folder, "RandomizerLogicFlatlandsOnly.csv"), "r") as f:
+    with open(os.path.join(rusted_moss_world_folder, "RustedMossLogic.csv"), "r") as f:
         logic_entries = list(csv.DictReader(f, delimiter=","))
 
         for line in logic_entries:

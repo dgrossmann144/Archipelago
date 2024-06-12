@@ -40,6 +40,10 @@ class DamageBoost(Toggle):
     """Locations which require a damage boost to access will be considered in logic"""
     display_name = "Damage Boost"
 
+class GrenadeBoost(Toggle):
+    """Locations which require a grenade boost to access will be considered in logic"""
+    display_name = "Grenade Boost"
+
 class PreciseMovement(Toggle):
     """Locations which require precise movement to access will be considered in logic"""
     display_name = "Precise Movement"
@@ -64,6 +68,7 @@ class RustedMossOptions(PerGameCommonOptions):
     hard_maya: HardMaya
     deathlink: Deathlink
     damage_boost: DamageBoost
+    grenade_boost: GrenadeBoost
     precise_movement: PreciseMovement
     precise_grapple: PreciseGrapple
     bunny_hopping: BunnyHopping
