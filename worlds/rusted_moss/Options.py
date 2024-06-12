@@ -1,13 +1,32 @@
 import typing
 from dataclasses import dataclass
-from Options import Toggle, Range, PerGameCommonOptions
+from Options import Toggle, Choice, PerGameCommonOptions
 
-class TitaniaPiecesRequired(Range):
-    """How many pieces of Titania are required to complete the game."""
-    display_name = "Titania Pieces Required"
-    default = 5
-    range_start = 0
-    range_end = 8
+# class TitaniaPiecesRequired(Range):
+#     """How many pieces of Titania are required to complete the game."""
+#     display_name = "Titania Pieces Required"
+#     default = 5
+#     range_start = 0
+#     range_end = 8
+
+class Ending(Choice):
+    """The ending of the game required to win."""
+    display_name = "Required Ending"
+    option_ending_a = 0
+    option_ending_b = 1
+    option_ending_c = 2
+    option_ending_d = 3
+    option_ending_e = 4
+    default = 0
+
+class RouteRequired(Choice):
+    """Main route of the game required to win."""
+    display_name = "Required Route"
+    option_neutral = 0
+    option_pacifist = 1
+    option_genocide = 2
+    option_all_routes = 3
+    default = 0
 
 class HardMaya(Toggle):
     """Choose to enable the hard version of the Living Quarters Maya fight."""
@@ -40,7 +59,8 @@ class HardCombat(Toggle):
 
 @dataclass
 class RustedMossOptions(PerGameCommonOptions):
-    titania_pieces_required: TitaniaPiecesRequired
+    # titania_pieces_required: TitaniaPiecesRequired
+    ending: Ending
     hard_maya: HardMaya
     deathlink: Deathlink
     damage_boost: DamageBoost

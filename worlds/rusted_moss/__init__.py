@@ -68,49 +68,10 @@ class RustedMossWorld(World):
 
     def set_rules(self) -> None:
         for location, rule in self.rules.items():
-            def check(state: CollectionState, rule=rule):
-                print("evalrule: " + rule)
-                print("result: " + str(self.evaluate_rule(state, rule.replace("(", "( ").replace(")", " )"))))
-                return self.evaluate_rule(state, rule.replace("(", "( ").replace(")", " )"))
-            set_rule(self.multiworld.get_location(location, self.player), check)
-
             # print("location: " + location)
             # print("rule: " + rule)
-            # set_rule(self.multiworld.get_location(location, self.player), self.convert_to_rule(rule))
+            set_rule(self.multiworld.get_location(location, self.player), self.convert_to_rule(rule))
     
-    def evaluate_rule(self, state: CollectionState, rule: str) -> bool:
-        # print(rule)
-        parts = rule.strip().split()
-        # print(parts)
-        if len(parts) == 0:
-            return True
-        elif len(parts) == 1:
-            if parts[0] in item_dict.keys():
-                return state.has(parts[0], self.player)
-            elif parts[0] in asdict(self.options).keys():
-                return asdict(self.options)[parts[0]].value == 1
-            elif any(parts[0] in exits for exits in self.exits.values()):
-                return state.has(parts[0], self.player)
-            elif parts[0] in self.events:
-                return state.has(parts[0], self.player)
-            else:
-                raise ValueError
-        else:
-            index = 0
-            while index < len(parts):
-                if parts[index] == "(":
-                    matching_paren_index = self.find_matching_paren(parts, index)
-                    if matching_paren_index == len(parts) - 1:
-                        return self.evaluate_rule(state, " ".join(parts[index + 1:matching_paren_index]))
-                    else:
-                        index = matching_paren_index
-                elif parts[index] == "+":
-                    return self.evaluate_rule(state, " ".join(parts[0:index])) and self.evaluate_rule(state, " ".join(parts[index+1:]))
-                elif parts[index] == "|":
-                    return self.evaluate_rule(state, " ".join(parts[0:index])) or self.evaluate_rule(state, " ".join(parts[index+1:]))
-                
-                index += 1
-
     def convert_to_rule(self, rule):
         lambda_string = "lambda state: "
         parts = rule.replace("(", "( ").replace(")", " )").split()
@@ -135,7 +96,8 @@ class RustedMossWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
-            "titania_pieces_required": self.options.titania_pieces_required.value,
+            # "titania_pieces_required": self.options.titania_pieces_required.value,
+            "ending": self.options.ending.value,
             "hard_maya": self.options.hard_maya.value,
             "deathlink": self.options.deathlink.value,
             "damage_boosts": self.options.damage_boost.value,
@@ -145,14 +107,3 @@ class RustedMossWorld(World):
             "hard_combat": self.options.hard_combat.value,
         }
     
-    def find_matching_paren(self, list: list[str], startingParenIndex):
-        parenCount = 0
-        for i in range(startingParenIndex, len(list)):
-            if list[i] == "(":
-                parenCount += 1
-            elif list[i] == ")":
-                parenCount -= 1
-                if(parenCount == 0):
-                    return i
-                
-        return -1

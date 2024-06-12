@@ -6,7 +6,7 @@ import Utils
 
 from worlds.rusted_moss.Utils import gameLocationToLocationName
 from worlds import AutoWorldRegister
-from NetUtils import NetworkItem
+from NetUtils import NetworkItem, ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, \
     server_loop, get_base_parser, gui_enabled
 
@@ -32,8 +32,9 @@ class RustedMossContext(CommonContext):
         self.got_deathlink = False
         self.save_game_folder = os.path.expandvars(r"%localappdata%/Rusted_Moss")
         self.deathlink_status = False
-        self.titania_pieces_required = 0
+        # self.titania_pieces_required = 0
         self.hard_maya = False
+        self.ending = 0
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -98,8 +99,9 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
             os.mkdir(ctx.save_game_folder)
         ctx.deathlink_status = args["slot_data"]["deathlink"]
         await ctx.update_death_link(ctx.deathlink_status)
-        ctx.titania_pieces_required = args["slot_data"]["titania_pieces_required"]
+        # ctx.titania_pieces_required = args["slot_data"]["titania_pieces_required"]
         ctx.hard_maya = args["slot_data"]["hard_maya"]
+        ctx.ending = args["slot_data"]["ending"]
         with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "w") as f:
             for location in args["checked_locations"]:
                 f.write(str(location) + "\n")
@@ -179,9 +181,26 @@ async def game_watcher(ctx: RustedMossContext):
                     finally:
                         await ctx.send_msgs([{"cmd": "LocationChecks", "locations": sending}])
                         os.remove(os.path.join(root, file))
-                if "endingCompleted" == file:
-                    # TODO ending file format and yaml options
-                    pass
+                if "endingAchieved" == file:
+                    with open(os.path.join(root, file), "r") as f:
+                        endingNumber = int(f.readline().strip())
+                        sendVictory = False
+                        if ctx.ending == 0 and endingNumber <= 3:
+                            sendVictory = True
+                        elif ctx.ending == 1 and endingNumber <= 2:
+                            sendVictory = True
+                        elif ctx.ending == 2 and endingNumber <= 2:
+                            sendVictory = True
+                        elif ctx.ending == 3 and endingNumber == 3:
+                            sendVictory = True
+                        elif ctx.ending == 4:
+                            sendVictory = True
+
+                        if not ctx.finished_game and sendVictory:
+                            await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+                            ctx.finished_game = True
+                        f.close()
+                    os.remove(os.path.join(root, file))
 
         ctx.locations_checked = sending
 
