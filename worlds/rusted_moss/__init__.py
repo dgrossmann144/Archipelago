@@ -95,6 +95,8 @@ class RustedMossWorld(World):
                 lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
             elif part in self.events:
                 lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
+            else:
+                print("uh oh")
         
         # print("lambda_string: " + lambda_string)
         return eval(lambda_string)
