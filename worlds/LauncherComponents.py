@@ -110,7 +110,9 @@ components: List[Component] = [
               file_identifier=SuffixIdentifier('.apzl')),
 
     #MegaMan Battle Network 3
-    Component('MMBN3 Client', 'MMBN3Client', file_identifier=SuffixIdentifier('.apbn3'))
+    Component('MMBN3 Client', 'MMBN3Client', file_identifier=SuffixIdentifier('.apbn3')),
+    # Rusted Moss
+    Component('Rusted Moss Client', 'RustedMossClient')
 ]
 
 
