@@ -68,6 +68,7 @@ class RustedMossWorld(World):
                 self.multiworld.itempool.append(self.create_item(item_key))
 
     def set_rules(self) -> None:
+        self.multiworld.completion_condition[self.player] = lambda state: state.count("e_goal_d", self.player)
         for location, rule in self.rules.items():
             # print("location: " + location)
             # print("rule: " + rule)
@@ -86,7 +87,14 @@ class RustedMossWorld(World):
             elif part in "|":
                 lambda_string += " or "
             elif part in item_dict.keys():
-                lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
+                if part == "Grappling_Hook":
+                    lambda_string += "state.count(\"Grappling_Hook\", " + str(self.player) + ") >= 1"
+                else:
+                    lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
+            elif part == "Grappling_Hook_Upgrade":
+                lambda_string += "state.count(\"Grappling_Hook\", " + str(self.player) + ") >= 2"
+            elif part == "Infinite_Grapple":
+                    lambda_string += "state.count(\"Grappling_Hook\", " + str(self.player) + ") >= 3"
             elif splitPart[0] in item_dict.keys():
                 lambda_string += "state.count(\"" + splitPart[0] + "\", " + str(self.player) + ") >= " + splitPart[1].split("}")[0]
             elif part in asdict(self.options).keys():
@@ -97,6 +105,7 @@ class RustedMossWorld(World):
                 lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
             else:
                 print("uh oh")
+                print(part)
         
         # print("lambda_string: " + lambda_string)
         return eval(lambda_string)
