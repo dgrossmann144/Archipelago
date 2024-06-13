@@ -32,7 +32,6 @@ class RustedMossContext(CommonContext):
         self.got_deathlink = False
         self.save_game_folder = os.path.expandvars(r"%localappdata%/Rusted_Moss")
         self.deathlink_status = False
-        # self.titania_pieces_required = 0
         self.hard_maya = False
         self.ending = 0
 
@@ -47,10 +46,8 @@ class RustedMossContext(CommonContext):
         self.finished_game = False
         for root, dirs, files in os.walk(path):
             for file in files:
-                # TODO verify what files exactly should be cleared
-                if file in ["deathlinkFromClient", "deathlinkFromServer", "checkedLocations", "receivedItems", "scoutLocations", "newLocations"]:
-                    pass
-                    # os.remove(os.path.join(root, file))
+                if file in ["deathlinkFromClient", "deathlinkFromServer", "checkedLocations", "receivedItems", "newItems", "scoutLocations", "newLocations", "endingAchieved"]:
+                    os.remove(os.path.join(root, file))
 
     async def connect(self, address: typing.Optional[str] = None):
         self.clear_rusted_moss_files()
@@ -99,7 +96,6 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
             os.mkdir(ctx.save_game_folder)
         ctx.deathlink_status = args["slot_data"]["deathlink"]
         await ctx.update_death_link(ctx.deathlink_status)
-        # ctx.titania_pieces_required = args["slot_data"]["titania_pieces_required"]
         ctx.hard_maya = args["slot_data"]["hard_maya"]
         ctx.ending = args["slot_data"]["ending"]
         with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "w") as f:

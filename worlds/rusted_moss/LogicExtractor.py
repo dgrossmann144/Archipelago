@@ -4,7 +4,6 @@ import csv
 import typing
 
 from .Locations import location_list
-from .Items import item_dict
 
 def extract_logic():
     # Rooms

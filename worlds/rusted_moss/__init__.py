@@ -1,13 +1,13 @@
 from dataclasses import asdict
 from typing import Dict, Any
 from worlds.AutoWorld import World
-from BaseClasses import CollectionState, ItemClassification, Region
+from BaseClasses import ItemClassification, Region
 
 from .Items import RustedMossItem, item_dict
 from .Locations import RustedMossLocation, location_list
 from .Options import RustedMossOptions
 from .LogicExtractor import extract_logic
-from ..generic.Rules import CollectionRule, set_rule
+from ..generic.Rules import set_rule
 
 class RustedMossWorld(World):
     """
@@ -44,8 +44,6 @@ class RustedMossWorld(World):
     
     def generate_early(self) -> None:
         (self.regions, self.exits, self.connectors, self.location_to_region, self.events, self.rules) = extract_logic()
-        # print(self.exits)
-        # print(self.connectors)
         self.multiworld.push_precollected(RustedMossItem("rm_start_0[100390]", ItemClassification.progression, None, self.player))
 
     def create_regions(self) -> None:
@@ -68,7 +66,18 @@ class RustedMossWorld(World):
                 self.multiworld.itempool.append(self.create_item(item_key))
 
     def set_rules(self) -> None:
-        self.multiworld.completion_condition[self.player] = lambda state: state.count("e_goal_d", self.player)
+        goal_event = "e_goal_e"
+        if self.options.ending.value == Options.Ending.option_ending_a:
+            goal_event = "e_goal_a"
+        elif self.options.ending.value == Options.Ending.option_ending_b:
+            goal_event = "e_goal_b"
+        elif self.options.ending.value == Options.Ending.option_ending_c:
+            goal_event = "e_goal_c"
+        elif self.options.ending.value == Options.Ending.option_ending_d:
+            goal_event = "e_goal_d"
+        elif self.options.ending.value == Options.Ending.option_ending_e:
+            goal_event = "e_goal_e"
+        self.multiworld.completion_condition[self.player] = lambda state: state.count(goal_event, self.player)
         for location, rule in self.rules.items():
             # print("location: " + location)
             # print("rule: " + rule)
@@ -104,7 +113,7 @@ class RustedMossWorld(World):
             elif part in self.events:
                 lambda_string += "state.count(\"" + part + "\", " + str(self.player) + ")"
             else:
-                print("uh oh")
+                print("unexpected part of rule")
                 print(part)
         
         # print("lambda_string: " + lambda_string)
@@ -112,7 +121,6 @@ class RustedMossWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
-            # "titania_pieces_required": self.options.titania_pieces_required.value,
             "ending": self.options.ending.value,
             "hard_maya": self.options.hard_maya.value,
             "deathlink": self.options.deathlink.value,
