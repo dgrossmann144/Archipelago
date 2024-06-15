@@ -30,6 +30,8 @@ def extract_logic():
             "requires": lineData[2],
             "notes": lineData[3],
         }
+        if line["from"] == "rm_test_4_alt_2[100383]":
+            print(line)
         if line["from"] == "from":
             continue
 
@@ -92,11 +94,15 @@ def extract_logic():
                 rules[line["to"]] = line["to"] + " | (" + line["from"] + requires + ")"
             else:
                 rules[line["to"]] = rules[line["to"]] + " | (" + line["from"] + requires + ")"
-            # reverse transition to transition rule
-            if line["from"] not in rules:
-                rules[line["from"]] = line["from"] + " | (" + line["to"] + requires + ")"
-            else:
-                rules[line["from"]] = rules[line["from"]] + " | (" + line["to"] + requires + ")"
+
+            fromRoom = line["from"].split("[")[0]
+            toRoom = line["to"].split("[")[0]
+            # Only do reverse transition if rooms are different
+            if fromRoom != toRoom:
+                if line["from"] not in rules:
+                    rules[line["from"]] = line["from"] + " | (" + line["to"] + requires + ")"
+                else:
+                    rules[line["from"]] = rules[line["from"]] + " | (" + line["to"] + requires + ")"
         elif line["to"] in location_list:
             # transition to location rule
             if line["to"] not in rules:
@@ -112,5 +118,6 @@ def extract_logic():
         
     # for location, rule in rules.items():
     #     print(location + ": " + rule)
+    print(rules["rm_test_4_alt_2[100383]"])
 
     return (regions, exits, connectors, location_to_region, events, rules)
