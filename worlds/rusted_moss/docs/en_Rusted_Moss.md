@@ -20,7 +20,7 @@ Items in Rusted Moss appear as they normally do and do not reflect if they are s
 ## Current Version (Alpha v0.1.0) Limitations and Issues
 * There is no indication to the player in game that they have received an item.
 * Many of the yaml settings are drastically underused with some only being considered in one or two rooms.
-* If the sniper is one of your first items the seed might not be beatable because of the mana cost of firing the sniper. Within a room I only counted the Sniper to be in logic if it required \< 3 uses, but this does not consider if the player has to traverse multiple rooms consecutively. A similar limitation probably exists for grenade and damage boosts, but is much less likely to be an issue due to their lesser prevelance. I plan to resolve the sniper issue by hopefully modifying it to still be able to fire without mana, but also doing no damage if that is the case.
+* The grenade or damage boost yaml options could potentially create an unbeatable seed because the logic makes no consideration for the player health needed to traverse consecutive rooms. I think this is extremely unlikely to happen based on how little those skips are required.
 * No check for if the player has the TP to equip all required trinkets for logic is in place.
 * Logic for combat arenas was always assumed to be doable based on room traversal alone, no accounting for the difficulty of the encounter was considered. This ties back to the hard combat yaml option being underused.
 * Logic for bosses is similarly lacking, it does include loose logic for what would be required to do the fight hitless, but for some of the later bosses this is an unreasonable expectation to make of the player.
