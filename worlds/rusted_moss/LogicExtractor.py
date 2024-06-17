@@ -30,8 +30,6 @@ def extract_logic():
             "requires": lineData[2],
             "notes": lineData[3],
         }
-        if line["from"] == "rm_test_4_alt_2[100383]":
-            print(line)
         if line["from"] == "from":
             continue
 
@@ -118,6 +116,5 @@ def extract_logic():
         
     # for location, rule in rules.items():
     #     print(location + ": " + rule)
-    print(rules["rm_test_4_alt_2[100383]"])
 
     return (regions, exits, connectors, location_to_region, events, rules)
