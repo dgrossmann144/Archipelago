@@ -1,6 +1,8 @@
 import os
 import asyncio
 import typing
+import bsdiff4
+import hashlib
 
 import Utils
 
@@ -9,11 +11,42 @@ from worlds import AutoWorldRegister
 from NetUtils import NetworkItem, ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, \
     server_loop, get_base_parser, gui_enabled
+from MultiServer import mark_raw
 
-# TODO add commands for patching, setting save directory, and syncing
+RAWDATAHASH: str = "e435e374cab856df1b1f00570347b6ff"
+MODDEDDATAHASH: str = "75c2c65539d7e43b329bc5e950d03138"
+
+# TODO add command for resyncing items/locations
 class RustedMossCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx):
         super().__init__(ctx)
+
+    @mark_raw
+    def _cmd_patch(self, directory: str = ""):
+        """Provide path to game install folder to patch the data.win file to modify the game."""
+        if isinstance(self.ctx, RustedMossContext):
+            dataWinPath = os.path.join(directory, "data.win")
+            if not os.path.isfile(dataWinPath):
+                self.output("ERROR: Could not find data.win file to patch in the folder provided.")
+            else:
+                basemd5 = hashlib.md5()
+                with open(dataWinPath, "rb") as file:
+                    base_data_bytes = bytes(file.read())
+                    file.close()
+                basemd5.update(base_data_bytes)
+                if RAWDATAHASH != basemd5.hexdigest():
+                    self.output("ERROR: MD5 hash of data.win file does not match correct hash. Make sure you have downpatched to the correct version (1.47)")
+                else:
+                    bsdiff4.file_patch_inplace(dataWinPath, os.path.join(os.getcwd(), "data/rusted_moss_patch.bsdiff"))
+                    moddedmd5 = hashlib.md5()
+                    with open(dataWinPath, "rb") as file:
+                        modded_data_bytes = bytes(file.read())
+                        file.close()
+                    moddedmd5.update(modded_data_bytes)
+                    if MODDEDDATAHASH != moddedmd5.hexdigest():
+                        self.output("ERROR: MD5 hash of moddified data.win file does not match correct hash. Try again or contact mod owner.")
+                    else:
+                        self.output("Patching successful")
 
 
 class RustedMossContext(CommonContext):
