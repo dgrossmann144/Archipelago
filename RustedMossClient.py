@@ -48,6 +48,15 @@ class RustedMossCommandProcessor(ClientCommandProcessor):
                     else:
                         self.output("Patching successful")
 
+    async def _cmd_deathlink(self):
+        """Toggles deathlink on or off."""
+        if isinstance(self.ctx, RustedMossContext):
+            self.ctx.deathlink_status = not self.ctx.deathlink_status
+            await self.ctx.update_death_link(self.ctx.deathlink_status)
+            if self.ctx.deathlink_status:
+                self.output(f"Deathlink enabled.")
+            else:
+                self.output(f"Deathlink disabled.")
 
 class RustedMossContext(CommonContext):
     tags = {"AP"}
@@ -58,6 +67,7 @@ class RustedMossContext(CommonContext):
     deathlink_status = False
     titania_pieces_required = 0
     hard_maya = False
+    shop_discount_percentage = 100
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -67,6 +77,7 @@ class RustedMossContext(CommonContext):
         self.deathlink_status = False
         self.hard_maya = False
         self.ending = 0
+        self.shop_discount_percentage = 100
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -79,7 +90,7 @@ class RustedMossContext(CommonContext):
         self.finished_game = False
         for root, dirs, files in os.walk(path):
             for file in files:
-                if file in ["deathlinkFromClient", "deathlinkFromServer", "checkedLocations", "receivedItems", "newItems", "scoutLocations", "newLocations", "endingAchieved"]:
+                if file in ["deathlinkFromClient", "deathlinkFromServer", "checkedLocations", "receivedItems", "newItems", "scoutLocations", "newLocations", "endingAchieved", "options", "readOptions"]:
                     os.remove(os.path.join(root, file))
 
     async def connect(self, address: typing.Optional[str] = None):
@@ -131,6 +142,15 @@ async def process_rusted_moss_cmd(ctx: RustedMossContext, cmd: str, args: dict):
         await ctx.update_death_link(ctx.deathlink_status)
         ctx.hard_maya = args["slot_data"]["hard_maya"]
         ctx.ending = args["slot_data"]["ending"]
+        ctx.shop_discount_percentage = args["slot_data"]["shop_discount_percentage"]
+        with open(os.path.join(ctx.save_game_folder, "options"), "w") as f:
+            f.write("hard_maya\n")
+            f.write(str(ctx.hard_maya) + "\n")
+            f.write("shop_discount_percentage\n")
+            f.write(str(ctx.shop_discount_percentage) + "\n")
+            f.close()
+        with open(os.path.join(ctx.save_game_folder, "readOptions"), "w") as f:
+            f.close()
         with open(os.path.join(ctx.save_game_folder, "checkedLocations"), "w") as f:
             for location in args["checked_locations"]:
                 f.write(str(location) + "\n")
@@ -171,14 +191,15 @@ async def game_watcher(ctx: RustedMossContext):
     while not ctx.exit_event.is_set():
         if ctx.got_deathlink:
             ctx.got_deathlink = False
-            with open(os.path.join(ctx.save_game_folder, "deathlinkFromServer"), "w") as f:
-                f.close()
+            if ctx.deathlink_status:
+                with open(os.path.join(ctx.save_game_folder, "deathlinkFromServer"), "w") as f:
+                    f.close()
         
         sending = []
         for root, dirs, files in os.walk(ctx.save_game_folder):
             for file in files:
                 if "deathlinkFromClient" in file:
-                    if "DeathLink" in ctx.tags:
+                    if ctx.deathlink_status:
                         await ctx.send_death()
                     os.remove(os.path.join(root, file))
                 if "scoutLocations" == file:

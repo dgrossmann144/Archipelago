@@ -130,5 +130,6 @@ class RustedMossWorld(World):
             "precise_grapple": self.options.precise_grapple.value,
             "bunny_hopping": self.options.bunny_hopping.value,
             "hard_combat": self.options.hard_combat.value,
+            "shop_discount_percentage": self.options.shop_discount_percentage.value,
         }
     

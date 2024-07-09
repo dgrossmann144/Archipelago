@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import Toggle, Choice, PerGameCommonOptions
+from Options import Toggle, Choice, PerGameCommonOptions, Range
 
 # class TitaniaPiecesRequired(Range):
 #     """How many pieces of Titania are required to complete the game."""
@@ -10,7 +10,7 @@ from Options import Toggle, Choice, PerGameCommonOptions
 #     range_end = 8
 
 class Ending(Choice):
-    """The ending of the game required to win."""
+    """The ending of the game required to win"""
     display_name = "Required Ending"
     option_ending_a = 0
     option_ending_b = 1
@@ -20,7 +20,7 @@ class Ending(Choice):
     default = 0
 
 class RouteRequired(Choice):
-    """Main route of the game required to win."""
+    """Main route of the game required to win"""
     display_name = "Required Route"
     option_neutral = 0
     option_pacifist = 1
@@ -29,7 +29,7 @@ class RouteRequired(Choice):
     default = 0
 
 class HardMaya(Toggle):
-    """Choose to enable the hard version of the Living Quarters Maya fight."""
+    """Choose to enable the hard version of the Living Quarters Maya fight"""
     display_name = "Hard Maya"
 
 class Deathlink(Toggle):
@@ -61,6 +61,13 @@ class HardCombat(Toggle):
     """Locations which require more proficiency in combat to access will be considered in logic"""
     display_name = "Hard Combat"
 
+class ShopDiscountPercentage(Range):
+    """Discount percentage to apply to shop prices to reduce money farming requirement"""
+    display_name = "Shop Item Cost Percentage"
+    default = 50
+    range_start = 1
+    range_end = 100
+
 @dataclass
 class RustedMossOptions(PerGameCommonOptions):
     # titania_pieces_required: TitaniaPiecesRequired
@@ -73,3 +80,4 @@ class RustedMossOptions(PerGameCommonOptions):
     precise_grapple: PreciseGrapple
     bunny_hopping: BunnyHopping
     hard_combat: HardCombat
+    shop_discount_percentage: ShopDiscountPercentage
