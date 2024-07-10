@@ -14,7 +14,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, \
 from MultiServer import mark_raw
 
 RAWDATAHASH: str = "e435e374cab856df1b1f00570347b6ff"
-MODDEDDATAHASH: str = "75c2c65539d7e43b329bc5e950d03138"
+MODDEDDATAHASH: str = "ef959da22dd5fd6412105b0ce4e9e03a"
 
 # TODO add command for resyncing items/locations
 class RustedMossCommandProcessor(ClientCommandProcessor):
