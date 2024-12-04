@@ -3,6 +3,7 @@ import asyncio
 import typing
 import bsdiff4
 import hashlib
+import pkgutil
 
 import Utils
 
@@ -37,7 +38,7 @@ class RustedMossCommandProcessor(ClientCommandProcessor):
                 if RAWDATAHASH != basemd5.hexdigest():
                     self.output("ERROR: MD5 hash of data.win file does not match correct hash. Make sure you have downpatched to the correct version (1.47)")
                 else:
-                    bsdiff4.file_patch_inplace(dataWinPath, os.path.join(os.getcwd(), "data/rusted_moss_patch.bsdiff"))
+                    bsdiff4.file_patch_inplace(dataWinPath, pkgutil.get_data(__name__, "data/rusted_moss_patch.bsdiff"))
                     moddedmd5 = hashlib.md5()
                     with open(dataWinPath, "rb") as file:
                         modded_data_bytes = bytes(file.read())
