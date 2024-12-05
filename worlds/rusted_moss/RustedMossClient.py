@@ -33,21 +33,24 @@ class RustedMossCommandProcessor(ClientCommandProcessor):
                 basemd5 = hashlib.md5()
                 with open(dataWinPath, "rb") as file:
                     base_data_bytes = bytes(file.read())
+                    basemd5.update(base_data_bytes)
+                    if RAWDATAHASH != basemd5.hexdigest():
+                        self.output("ERROR: MD5 hash of data.win file does not match correct hash. Make sure you have downpatched to the correct version (1.47)")
+                        return
+
+                    modded_data = bsdiff4.patch(base_data_bytes, pkgutil.get_data(__name__, "data/rusted_moss_patch.bsdiff"))
+
+                with open(dataWinPath, "wb") as file:
+                    file.write(modded_data)
+                moddedmd5 = hashlib.md5()
+                with open(dataWinPath, "rb") as file:
+                    modded_data_bytes = bytes(file.read())
                     file.close()
-                basemd5.update(base_data_bytes)
-                if RAWDATAHASH != basemd5.hexdigest():
-                    self.output("ERROR: MD5 hash of data.win file does not match correct hash. Make sure you have downpatched to the correct version (1.47)")
+                moddedmd5.update(modded_data_bytes)
+                if MODDEDDATAHASH != moddedmd5.hexdigest():
+                    self.output("ERROR: MD5 hash of moddified data.win file does not match correct hash. Try again or contact mod owner.")
                 else:
-                    bsdiff4.file_patch_inplace(dataWinPath, pkgutil.get_data(__name__, "data/rusted_moss_patch.bsdiff"))
-                    moddedmd5 = hashlib.md5()
-                    with open(dataWinPath, "rb") as file:
-                        modded_data_bytes = bytes(file.read())
-                        file.close()
-                    moddedmd5.update(modded_data_bytes)
-                    if MODDEDDATAHASH != moddedmd5.hexdigest():
-                        self.output("ERROR: MD5 hash of moddified data.win file does not match correct hash. Try again or contact mod owner.")
-                    else:
-                        self.output("Patching successful")
+                    self.output("Patching successful")
 
     async def _cmd_deathlink(self):
         """Toggles deathlink on or off."""
