@@ -10,7 +10,7 @@
 1. Install the [Rusted Moss Mod Manager](https://github.com/Harlem512/rm-mod-manager)
 2. Install the Archipelago Client mod using the mod manager
 
-# If the latest version of the Archipelago Client mod is not available in the Rusted Moss Mod Manager follow these steps:
+### If the latest version of the Archipelago Client mod is not available in the Rusted Moss Mod Manager follow these steps:
 1. Install the [Rusted Moss Mod Manager](https://github.com/Harlem512/rm-mod-manager) (yes you still need it)
 2. Download the latest version of the Archipelago Client mod from [here](https://github.com/dgrossmann144/RustedMossArchipelagoClient/releases/latest)
 3. Extract the zip file and place the contents (the archipelago folder) in the `/AppData/Local/Rusted_Moss/mods/rmml` folder
