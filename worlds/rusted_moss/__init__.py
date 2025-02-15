@@ -1,6 +1,7 @@
 from dataclasses import asdict
 from typing import Dict, Any
 from worlds.AutoWorld import World
+from worlds.LauncherComponents import components, Component, launch_subprocess
 from BaseClasses import ItemClassification, Region
 
 from .Items import RustedMossItem, item_dict
@@ -8,6 +9,16 @@ from .Locations import RustedMossLocation, location_list
 from .Options import RustedMossOptions
 from .LogicExtractor import extract_logic
 from ..generic.Rules import set_rule
+
+
+def launch_client(*args):
+    from .RustedMossClient import main
+    launch_subprocess(main, name="Rusted Moss Client")
+
+
+# Add component to Launcher
+components.append(Component('Rusted Moss Client', func=launch_client))
+
 
 class RustedMossWorld(World):
     """
