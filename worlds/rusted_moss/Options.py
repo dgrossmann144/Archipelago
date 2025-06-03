@@ -28,6 +28,15 @@ class RouteRequired(Choice):
     option_all_routes = 3
     default = 0
 
+class Character(Choice):
+    """The character you want to play as"""
+    display_name = "Character"
+    option_fern = 0
+    option_maya = 1
+    option_ameli = 2
+    option_gimmick = 3
+    default = 0
+
 class HardMaya(Toggle):
     """Choose to enable the hard version of the Living Quarters Maya fight"""
     display_name = "Hard Maya"
@@ -72,6 +81,7 @@ class ShopDiscountPercentage(Range):
 class RustedMossOptions(PerGameCommonOptions):
     # titania_pieces_required: TitaniaPiecesRequired
     ending: Ending
+    character: Character
     hard_maya: HardMaya
     deathlink: Deathlink
     damage_boost: DamageBoost

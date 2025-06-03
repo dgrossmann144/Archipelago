@@ -6,7 +6,7 @@ from BaseClasses import ItemClassification, Region, Tutorial
 
 from .Items import RustedMossItem, item_dict
 from .Locations import RustedMossLocation, location_list
-from .Options import RustedMossOptions, Ending
+from .Options import RustedMossOptions, Ending, Character
 from .LogicExtractor import extract_logic
 from ..generic.Rules import set_rule
 
@@ -41,8 +41,8 @@ class RustedMossWorld(World):
     location_to_region: ClassVar[dict[str, str]] = {}
     # Event names
     events: ClassVar[set] = set()
-    # Extracted rule definitions {(parent, spot), rule_string} where spot may be a Location, Region, or Event
-    rules: ClassVar[dict[tuple[str, str], str]] = {}
+    # Extracted rule definitions {(parent, spot, character), rule_string} where spot may be a Location, Region, or Event
+    rules: ClassVar[dict[tuple[str, str, int], str]] = {}
 
     def create_item(self, item: str) -> RustedMossItem:
         return RustedMossItem(item, item_dict[item][0], self.item_name_to_id[item], self.player)
@@ -57,7 +57,7 @@ class RustedMossWorld(World):
         (cls.events, cls.rules) = extract_logic()
         location_connections = Counter()
         cls.location_to_region = {}
-        for parent, target in cls.rules.keys():  # intentionally keys()
+        for parent, target, _ in cls.rules.keys():  # intentionally keys()
             if target not in cls.location_name_to_id and target not in cls.events:
                 continue
             location_connections[target] += 1
@@ -66,6 +66,15 @@ class RustedMossWorld(World):
             elif location_connections[target] == 2:
                 del cls.location_to_region[target]
                 # remove any locations with more than one connection as they need a proxy region
+
+    def generate_early(self):
+        # apworld version check
+        if self.options.character == Character.option_maya:
+            raise ValueError("Rusted Moss character Maya is not available with this AP World. Valid options are `fern` or `gimmick`.")
+            self.options.character = Character.option_fern
+        elif self.options.character == Character.option_ameli:
+            raise ValueError("Rusted Moss character Ameli is not available with this AP World. Valid options are `fern` or `gimmick`.")
+            self.options.character = Character.option_fern
 
     def create_regions(self) -> None:
         regions = {}
@@ -85,7 +94,10 @@ class RustedMossWorld(World):
 
         get_parent("Menu").connect(get_parent("rm_start_0[100390]"))  # this could be a different origin_region_name too
         for key, rule in self.rules.items():
-            parent, target = key
+            parent, target, character = key
+            # only run logic parsing if the character matches
+            if character != self.options.character:
+                continue
             logic = None if rule == "" else self.convert_to_rule(rule)
             if target in self.location_to_region:
                 # if a location is in this lookup it doesn't need a proxy region, save the logic for later and skip
