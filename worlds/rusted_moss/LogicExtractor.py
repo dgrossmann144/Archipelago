@@ -110,5 +110,4 @@ def expand_gimmick_logic(rule: str):
     rule = rule.replace("Jump{3}", jump_3)
     rule = rule.replace("Jump{4}", jump_4)
     rule = rule.replace("Flying", flying)
-    print(rule)
     return rule

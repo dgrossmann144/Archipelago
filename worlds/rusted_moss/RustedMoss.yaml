@@ -1,0 +1,45 @@
+# Slot name
+name: Name
+# YAML description
+description: 'Description'
+game: Rusted Moss
+Rusted Moss:
+  # Select which ending is required to complete the slot
+  # If you accomplish an ending which is a superset of
+  # the requirements for the goal ending it will be counted
+  #options: ending_a, ending_b, ending_c, ending_d, ending_e
+  # ending_a: beat seer while having 5 or more titania pieces. "Absorb power for yourself" option after beating seer
+  # ending_b: beat seer while having 5 or more titania pieces and having the Maya trinket equipped. "Share power with Maya" option after beating seer 
+  # ending_c: beat seer while having 5 or more titania pieces and having the Maya and Fern trinkets equipped. "Grant Maya a wish" option after beating seer
+  # ending_d: beat seer/final boss while having 8 or more titania pieces. "Summon Titania" option after beating seer
+  # ending_e: beat seer with any amount of titania pieces
+  ending: ending_a
+  # Select what character you are going to play as
+  # NOTE: the client will not enforce this, you must select the character yourself in-game
+  # `gimmick` requires installing the Gimmick mod and making a Fern save
+  # WARNING: Only Fern and Gimmick are currently available
+  #options: fern, maya, ameli, gimmick
+  # fern: The ranger. Uses cool guns.
+  # maya: The fighter. Uses swords and grenades.
+  # ameli: The witch. Uses magic explosions.
+  # gimmick: The meme. Uses additional jumps.
+  character: fern
+  # Toggle for if damage boosts from enemies or other damage sources are considered in logic
+  damage_boost: false
+  # Toggle for if damage boosting using a grenade is considered in logic
+  grenade_boost: false
+  # Toggle for if skips that require precise movement are considered in logic
+  # This is mostly from jumps that exploit the generous coyote time
+  precise_movement: false
+  # Toggle for if skips that require precise use of the grappling hook are considered in logic
+  precise_grapple: false
+  # Toggle for if skips that require preservation of momentum through bunny hopping are considered in logic
+  bunny_hopping: false
+  # Toggle for if combat arenas that are usually encountered with more items than the player usually has are considered in logic
+  hard_combat: false
+  # Used to choose what version of the maya 2 fight in the living quarters will be encounted
+  hard_maya: false
+  # Send and receieve deathlinks
+  deathlink: false
+  # Discount as a percentage to apply to shop prices to reduce potential money farming should be a number 1 to 100
+  shop_discount_percentage: 100
