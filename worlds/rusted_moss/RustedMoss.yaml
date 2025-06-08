@@ -7,7 +7,7 @@ Rusted Moss:
   # Select which ending is required to complete the slot
   # If you accomplish an ending which is a superset of
   # the requirements for the goal ending it will be counted
-  #options: ending_a, ending_b, ending_c, ending_d, ending_e
+  # options: ending_a, ending_b, ending_c, ending_d, ending_e
   # ending_a: beat seer while having 5 or more titania pieces. "Absorb power for yourself" option after beating seer
   # ending_b: beat seer while having 5 or more titania pieces and having the Maya trinket equipped. "Share power with Maya" option after beating seer 
   # ending_c: beat seer while having 5 or more titania pieces and having the Maya and Fern trinkets equipped. "Grant Maya a wish" option after beating seer
@@ -20,8 +20,8 @@ Rusted Moss:
   # WARNING: Only Fern and Gimmick are currently available
   #options: fern, maya, ameli, gimmick
   # fern: The ranger. Uses cool guns.
-  # maya: The fighter. Uses swords and grenades.
-  # ameli: The witch. Uses magic explosions.
+  # maya: Unavailable. The fighter. Uses swords and grenades.
+  # ameli: Unavailable. The witch. Uses magic explosions.
   # gimmick: The meme. Uses additional jumps.
   character: fern
   # Toggle for if damage boosts from enemies or other damage sources are considered in logic
@@ -42,4 +42,5 @@ Rusted Moss:
   # Send and receieve deathlinks
   deathlink: false
   # Discount as a percentage to apply to shop prices to reduce potential money farming should be a number 1 to 100
+  # 100 is normal price, 50 is half price
   shop_discount_percentage: 100

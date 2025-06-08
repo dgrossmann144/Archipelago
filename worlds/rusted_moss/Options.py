@@ -1,4 +1,3 @@
-import typing
 from dataclasses import dataclass
 from Options import Toggle, Choice, PerGameCommonOptions, Range
 
@@ -29,7 +28,7 @@ class RouteRequired(Choice):
     default = 0
 
 class Character(Choice):
-    """The character you want to play as"""
+    """The character you want to play as, currnently only fern and gimmick are supported"""
     display_name = "Character"
     option_fern = 0
     option_maya = 1

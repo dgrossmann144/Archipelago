@@ -1,8 +1,4 @@
-from dataclasses import asdict
-import os
-import csv
 import pkgutil
-import typing
 
 from .Locations import location_list
 from .Options import Character
@@ -10,7 +6,7 @@ from .Options import Character
 
 def extract_logic():
     # Event names
-    events: set = set()
+    events: set[str] = set()
     # Location/Region: access rule logic
     rules: dict[tuple[str, str, int], str] = {}
 
@@ -27,7 +23,7 @@ def extract_logic():
     return (events, rules)
 
 
-def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set, logic_file: str, character: int):
+def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set[str], logic_file: str, character: int):
     def add_rule(parent: str, spot: str, rule: str):
         """
         Joins a new rule + parent with potential existing rules

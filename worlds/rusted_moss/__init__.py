@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from collections import Counter
-from typing import Dict, Any, ClassVar
+from typing import Dict, Any, ClassVar, Optional
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import ItemClassification, Region, Tutorial
 
@@ -40,22 +40,22 @@ class RustedMossWorld(World):
     # Location: Region for locations that only have one connection
     location_to_region: ClassVar[dict[str, str]] = {}
     # Event names
-    events: ClassVar[set] = set()
+    events: ClassVar[set[str]] = set()
     # Extracted rule definitions {(parent, spot, character), rule_string} where spot may be a Location, Region, or Event
     rules: ClassVar[dict[tuple[str, str, int], str]] = {}
 
-    def create_item(self, item: str) -> RustedMossItem:
-        return RustedMossItem(item, item_dict[item][0], self.item_name_to_id[item], self.player)
+    def create_item(self, name: str) -> RustedMossItem:
+        return RustedMossItem(name, item_dict[name][0], self.item_name_to_id[name], self.player)
 
-    def create_event(self, locationName, itemName, region) -> RustedMossLocation:
+    def create_event(self, locationName: str, itemName: str, region: Optional[Region]) -> RustedMossLocation:
         event = RustedMossLocation(self.player, locationName, None, region)
         event.place_locked_item(RustedMossItem(itemName, ItemClassification.progression, None, self.player))
         return event
 
     @classmethod
-    def stage_generate_early(cls, multiworld) -> None:
+    def stage_generate_early(cls, _) -> None:
         (cls.events, cls.rules) = extract_logic()
-        location_connections = Counter()
+        location_connections: Dict[str, int] = Counter()
         cls.location_to_region = {}
         for parent, target, _ in cls.rules.keys():  # intentionally keys()
             if target not in cls.location_name_to_id and target not in cls.events:
@@ -77,7 +77,7 @@ class RustedMossWorld(World):
             self.options.character = Character.option_fern
 
     def create_regions(self) -> None:
-        regions = {}
+        regions: Dict[str, Region] = {}
         location_rules = {}
 
         def get_parent(name: str) -> Region:
@@ -124,7 +124,7 @@ class RustedMossWorld(World):
 
     def create_items(self) -> None:
         for item_key, item_value in item_dict.items():
-            for count in range(item_value[1]):
+            for _ in range(item_value[1]):
                 self.multiworld.itempool.append(self.create_item(item_key))
 
     def set_rules(self) -> None:
@@ -141,7 +141,7 @@ class RustedMossWorld(World):
             goal_event = "e_goal_e"
         self.multiworld.completion_condition[self.player] = lambda state: state.has(goal_event, self.player)
 
-    def convert_to_rule(self, rule):
+    def convert_to_rule(self, rule: str):
         def make_has(item: str, count: int) -> str:
             if count > 1:
                 return f'state.has("{item}", {self.player}, {count})'
