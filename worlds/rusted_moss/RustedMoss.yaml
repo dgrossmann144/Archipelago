@@ -44,3 +44,5 @@ Rusted Moss:
   # Discount as a percentage to apply to shop prices to reduce potential money farming should be a number 1 to 100
   # 100 is normal price, 50 is half price
   shop_discount_percentage: 100
+  # Toggle if infinite grapple can be acquired outside of the Robin fight and it being a check
+  no_infinite_grapple: false

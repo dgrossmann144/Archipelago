@@ -76,6 +76,10 @@ class ShopDiscountPercentage(Range):
     range_start = 1
     range_end = 100
 
+class NoInfiniteGrapple(Toggle):
+    """Infinite Grapple only in the Robin Fight"""
+    display_name = "No Infinite Grapple"
+
 @dataclass
 class RustedMossOptions(PerGameCommonOptions):
     # titania_pieces_required: TitaniaPiecesRequired
@@ -90,3 +94,4 @@ class RustedMossOptions(PerGameCommonOptions):
     bunny_hopping: BunnyHopping
     hard_combat: HardCombat
     shop_discount_percentage: ShopDiscountPercentage
+    no_infinite_grapple: NoInfiniteGrapple

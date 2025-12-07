@@ -4,8 +4,7 @@ from typing import Dict, Any, ClassVar, Optional
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import ItemClassification, Region, Tutorial
 
-from .Items import RustedMossItem, item_dict
-from .Locations import RustedMossLocation, location_list
+from .Items import RustedMossItem, RustedMossLocation, get_location_names_to_ids, get_item_name_to_ids, base_id, get_locations, item_locations
 from .Options import RustedMossOptions, Ending, Character
 from .LogicExtractor import extract_logic
 from ..generic.Rules import set_rule
@@ -34,9 +33,9 @@ class RustedMossWorld(World):
     options_dataclass = RustedMossOptions
     options: RustedMossOptions
     topology_present = True
-    base_id = 144000000
-    item_name_to_id = {item: id for id, item in enumerate(item_dict.keys(), base_id)}
-    location_name_to_id = {location: id for id, location in enumerate(location_list, base_id)}
+    base_id = base_id
+    item_name_to_id = get_item_name_to_ids()
+    location_name_to_id = get_location_names_to_ids()
     # Location: Region for locations that only have one connection
     location_to_region: ClassVar[dict[str, str]] = {}
     # Event names
@@ -45,7 +44,7 @@ class RustedMossWorld(World):
     rules: ClassVar[dict[tuple[str, str, int], str]] = {}
 
     def create_item(self, name: str) -> RustedMossItem:
-        return RustedMossItem(name, item_dict[name][0], self.item_name_to_id[name], self.player)
+        return RustedMossItem(name, item_locations[name][0], self.item_name_to_id[name], self.player)
 
     def create_event(self, locationName: str, itemName: str, region: Optional[Region]) -> RustedMossLocation:
         event = RustedMossLocation(self.player, locationName, None, region)
@@ -75,6 +74,9 @@ class RustedMossWorld(World):
         elif self.options.character == Character.option_ameli:
             raise ValueError("Rusted Moss character Ameli is not available with this AP World. Valid options are `fern` or `gimmick`.")
             self.options.character = Character.option_fern
+
+        if (self.options.no_infinite_grapple):
+            del item_locations["Grappling_Hook"][1][2]
 
     def create_regions(self) -> None:
         regions: Dict[str, Region] = {}
@@ -113,7 +115,7 @@ class RustedMossWorld(World):
                 set_rule(eventLocation, rule)
             get_parent(event).locations.append(eventLocation)
 
-        for location in self.location_name_to_id.keys():
+        for location in get_locations():
             loc = RustedMossLocation(self.player, location, self.location_name_to_id[location], get_parent(location))
             rule = location_rules.get(location)
             if rule:
@@ -123,8 +125,8 @@ class RustedMossWorld(World):
         self.multiworld.regions += list(regions.values())
 
     def create_items(self) -> None:
-        for item_key, item_value in item_dict.items():
-            for _ in range(item_value[1]):
+        for item_key, item_value in item_locations.items():
+            for _ in item_value[1]:
                 self.multiworld.itempool.append(self.create_item(item_key))
 
     def set_rules(self) -> None:
@@ -152,7 +154,7 @@ class RustedMossWorld(World):
             **{c: c for c in "()"},
             "+": " and ",
             "|": " or ",
-            **{i: make_has(i, 1) for i in item_dict.keys()},
+            **{i: make_has(i, 1) for i in item_locations.keys()},
             "Grappling_Hook_Upgrade": make_has("Grappling_Hook", 2),
             "Infinite_Grapple": make_has("Grappling_Hook", 3),
             **{name: str(bool(value)) for name, value in asdict(self.options).items()},
@@ -166,7 +168,7 @@ class RustedMossWorld(World):
 
             if part in part_lookup:
                 lambda_string += part_lookup[part]
-            elif splitPart[0] in item_dict.keys():
+            elif splitPart[0] in item_locations.keys():
                 lambda_string += make_has(splitPart[0], int(splitPart[1].split("}")[0]))
             else:
                 print("unexpected part of rule")
@@ -187,4 +189,5 @@ class RustedMossWorld(World):
             "bunny_hopping": self.options.bunny_hopping.value,
             "hard_combat": self.options.hard_combat.value,
             "shop_discount_percentage": self.options.shop_discount_percentage.value,
+            "no_infinite_grapple": self.options.no_infinite_grapple.value,
         }
