@@ -75,7 +75,7 @@ class RustedMossWorld(World):
             raise ValueError("Rusted Moss character Ameli is not available with this AP World. Valid options are `fern` or `gimmick`.")
             self.options.character = Character.option_fern
 
-        if (self.options.no_infinite_grapple):
+        if (not self.options.infinite_grapple_randomized):
             del item_locations["Grappling_Hook"][1][2]
 
     def create_regions(self) -> None:
@@ -154,6 +154,7 @@ class RustedMossWorld(World):
             **{c: c for c in "()"},
             "+": " and ",
             "|": " or ",
+            "-": " not ",
             **{i: make_has(i, 1) for i in item_locations.keys()},
             "Grappling_Hook_Upgrade": make_has("Grappling_Hook", 2),
             "Infinite_Grapple": make_has("Grappling_Hook", 3),
@@ -189,5 +190,5 @@ class RustedMossWorld(World):
             "bunny_hopping": self.options.bunny_hopping.value,
             "hard_combat": self.options.hard_combat.value,
             "shop_discount_percentage": self.options.shop_discount_percentage.value,
-            "no_infinite_grapple": self.options.no_infinite_grapple.value,
+            "infinite_grapple_randomized": self.options.infinite_grapple_randomized.value,
         }

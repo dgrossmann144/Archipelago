@@ -62,10 +62,6 @@ item_locations = {
     "Energy_Disruptor": (ItemClassification.progression, ["Snowy Outpost Energy Disruptor"]),
 }
 
-def filterItemsAndLocations(options):
-    if (options.no_infinite_grapple):
-        del item_locations["Grappling_Hook"][1][2]
-
 def get_locations():
     return chain(*(value[1] for value in item_locations.values()))
 
