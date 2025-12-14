@@ -44,3 +44,6 @@ Rusted Moss:
   # Discount as a percentage to apply to shop prices to reduce potential money farming should be a number 1 to 100
   # 100 is normal price, 50 is half price
   shop_discount_percentage: 100
+  # Minimum MP to keep the player on. Should be a number 0 to 39
+  # 5 lets you perform sniper and grenade jumps more forgiving. Values below 5 could lead to incompletable seeds.
+  min_mp: 5
