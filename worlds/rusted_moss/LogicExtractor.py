@@ -1,6 +1,6 @@
 import pkgutil
 
-from .Locations import location_list
+from .Items import get_locations
 from .Options import Character
 
 
@@ -72,7 +72,7 @@ def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set[str],
             # Only do reverse transition if rooms are different
             if fromRoom != toRoom:
                 add_rule(line["to"], line["from"], requires)
-        elif line["to"] in location_list:
+        elif line["to"] in get_locations():
             # transition to location rule
             add_rule(line["from"], line["to"], requires)
         elif line["to"].startswith("e_"):
