@@ -9,7 +9,7 @@ class RustedMossLocation(Location):
 
 base_id = 144000000
 
-item_locations = {
+item_locations: dict[str, tuple[int, list[str]]] = {
     "Incendiary_Essence": (ItemClassification.useful, ["Barrows Ceiling Incendiary Essence"]),  #00
     "Tattered_Blindfold": (ItemClassification.useful, ["Ichor Refinery Tattered Blindfold"]),   #01
     "Giant_Chambers": (ItemClassification.useful, ["Factory Roof Giant Chambers"]),             #02
