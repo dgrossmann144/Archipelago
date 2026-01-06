@@ -136,7 +136,7 @@ class RustedMossWorld(World):
         counter = Counter(skipped_items)
         for item_key, item_value in item_locations.items():
             count = len(item_value[1]) - counter[item_key]
-            if item_key == "Rifle":
+            if item_key == "Rail":
                 count += 1
 
             for _ in range(count):
