@@ -84,9 +84,9 @@ class MinMP(Range):
     range_end = 39
 
 class StartingWeapon(Choice):
-    """Weapon (or absence of one) you start with."""
+    """Weapon you start with."""
     display_name = "Starting Weapon"
-    option_rifle = 0
+    option_rail = 0
     option_shotgun = 1
     option_bolt_dispenser = 2
     option_sniper = 3
