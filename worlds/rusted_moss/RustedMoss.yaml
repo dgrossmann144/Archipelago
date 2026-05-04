@@ -48,4 +48,4 @@ Rusted Moss:
   # 5 lets you perform sniper and grenade jumps more forgiving. Values below 5 could lead to incompletable seeds.
   min_mp: 5
   # Set weapon to start with. Sniper with less than 5 min_mp could lead to incompletable seeds.
-  starting_weapon: rifle
+  starting_weapon: rail
