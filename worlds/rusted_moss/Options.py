@@ -83,6 +83,17 @@ class MinMP(Range):
     range_start = 0
     range_end = 39
 
+class StartingWeapon(Choice):
+    """Weapon you start with."""
+    display_name = "Starting Weapon"
+    option_rail = 0
+    option_shotgun = 1
+    option_bolt_dispenser = 2
+    option_sniper = 3
+    option_rocket_launcher = 4
+    option_pistol = 5
+    default = 0
+
 @dataclass
 class RustedMossOptions(PerGameCommonOptions):
     # titania_pieces_required: TitaniaPiecesRequired
@@ -98,3 +109,4 @@ class RustedMossOptions(PerGameCommonOptions):
     hard_combat: HardCombat
     shop_discount_percentage: ShopDiscountPercentage
     min_mp: MinMP
+    starting_weapon: StartingWeapon

@@ -62,9 +62,11 @@ item_locations: dict[str, tuple[int, list[str]]] = {
     "Rocket_Launcher": (ItemClassification.progression, ["Lake Rocket Launcher"]), #49 101
     "Sniper": (ItemClassification.progression, ["Smoked Forest Sniper"]), #50 102
     "Bolt_Dispenser": (ItemClassification.useful, ["Living Quarters Bolt Dispenser"]), #51 103
-    "Rifle": (ItemClassification.useful, []), #52
+    "Rail": (ItemClassification.useful, []), #52
     "Chest": (ItemClassification.filler, []), #53
 }
+
+weapons_list = ["Rail", "Shotgun", "Bolt_Dispenser", "Sniper", "Rocket_Launcher", "Pistol"]
 
 def get_locations():
     return chain(*(value[1] for value in item_locations.values()))

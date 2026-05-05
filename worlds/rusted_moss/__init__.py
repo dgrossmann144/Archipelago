@@ -4,7 +4,7 @@ from typing import Dict, Any, ClassVar, Optional
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import ItemClassification, Region, Tutorial
 
-from .Items import RustedMossItem, RustedMossLocation, get_location_names_to_ids, get_item_name_to_ids, base_id, get_locations, item_locations
+from .Items import RustedMossItem, RustedMossLocation, get_location_names_to_ids, get_item_name_to_ids, base_id, get_locations, item_locations, weapons_list
 from .Options import RustedMossOptions, Ending, Character
 from .LogicExtractor import extract_logic
 from ..generic.Rules import set_rule
@@ -128,8 +128,18 @@ class RustedMossWorld(World):
         self.multiworld.regions += list(regions.values())
 
     def create_items(self) -> None:
+        skipped_items = []
+
+        self.push_precollected(self.create_item(weapons_list[self.options.starting_weapon]))
+        skipped_items.append(weapons_list[self.options.starting_weapon])
+
+        counter = Counter(skipped_items)
         for item_key, item_value in item_locations.items():
-            for _ in item_value[1]:
+            count = len(item_value[1]) - counter[item_key]
+            if item_key == "Rail":
+                count += 1
+
+            for _ in range(count):
                 self.multiworld.itempool.append(self.create_item(item_key))
 
     def set_rules(self) -> None:
