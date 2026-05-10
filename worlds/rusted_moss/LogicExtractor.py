@@ -62,6 +62,9 @@ def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set[str],
         requires = line["requires"]
         if character == Character.option_gimmick:
             requires = expand_gimmick_logic(requires)
+        # just in case since logic was done assuming player would have rail when using heavy ammo
+        if character == Character.option_fern:
+            requires = requires.replace("Heavy_Ammo", "(Heavy_Ammo + Rail)")
 
         if line["to"].find("[") != -1:
             # transition to transition rule
