@@ -59,7 +59,7 @@ class PreciseMovement(Toggle):
 class PreciseGrapple(Toggle):
     """Locations which require precise grappling hook usage to access will be considered in logic"""
     display_name = "Precise Grapple"
-    default = 1
+    default = 0
 
 class BunnyHopping(Toggle):
     """Locations which require preservation of momentum through bunny hopping will be considered in logic"""
