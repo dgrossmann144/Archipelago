@@ -76,13 +76,6 @@ class ShopDiscountPercentage(Range):
     range_start = 1
     range_end = 100
 
-class MinMP(Range):
-    """Minimum MP value. Value of at least 5 makes Sniper and Grenade jumps more forgiving. Values below 5 could lead to incompletable seeds,"""
-    display_name = "Minimum MP"
-    default = 5
-    range_start = 0
-    range_end = 39
-
 class StartingWeapon(Choice):
     """Weapon you start with."""
     display_name = "Starting Weapon"
@@ -108,5 +101,4 @@ class RustedMossOptions(PerGameCommonOptions):
     bunny_hopping: BunnyHopping
     hard_combat: HardCombat
     shop_discount_percentage: ShopDiscountPercentage
-    min_mp: MinMP
     starting_weapon: StartingWeapon
