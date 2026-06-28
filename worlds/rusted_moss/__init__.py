@@ -202,5 +202,4 @@ class RustedMossWorld(World):
             "bunny_hopping": self.options.bunny_hopping.value,
             "hard_combat": self.options.hard_combat.value,
             "shop_discount_percentage": self.options.shop_discount_percentage.value,
-            "min_mp": self.options.min_mp.value,
         }
