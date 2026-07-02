@@ -70,11 +70,11 @@ class HardCombat(Toggle):
     display_name = "Hard Combat"
 
 class ShopDiscountPercentage(Range):
-    """Discount percentage to apply to shop prices to reduce money farming requirement. 100 is normal price, 50 is half price"""
-    display_name = "Shop Item Cost Percentage"
-    default = 50
-    range_start = 1
-    range_end = 100
+    """Discount percentage to apply to shop prices to reduce money farming requirement. 0 is normal price, 50 is half price"""
+    display_name = "Shop Item Cost Discount"
+    default = 0
+    range_start = 0
+    range_end = 99
 
 class StartingWeapon(Choice):
     """Weapon you start with."""
