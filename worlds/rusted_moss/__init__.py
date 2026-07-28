@@ -3,6 +3,7 @@ from collections import Counter
 from typing import Dict, Any, ClassVar, Optional
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import ItemClassification, Region, Tutorial
+from Options import OptionError
 
 from .Items import RustedMossItem, RustedMossLocation, get_location_names_to_ids, get_item_name_to_ids, base_id, get_locations, item_locations, weapons_list
 from .Options import RustedMossOptions, Ending, Character
@@ -66,20 +67,11 @@ class RustedMossWorld(World):
                 del cls.location_to_region[target]
                 # remove any locations with more than one connection as they need a proxy region
 
-        # remove items not in word yet as dlcs are not supported
-        del item_locations["Energy_Converter"]
-        del item_locations["Soft_Fae"]
-        del item_locations["Glass_Coin"]
-        del item_locations["Mossy_Wings"]
-
     def generate_early(self):
         # apworld version check
-        if self.options.character == Character.option_maya:
-            raise ValueError("Rusted Moss character Maya is not available with this AP World. Valid options are `fern` or `gimmick`.")
-            self.options.character = Character.option_fern
-        elif self.options.character == Character.option_ameli:
-            raise ValueError("Rusted Moss character Ameli is not available with this AP World. Valid options are `fern` or `gimmick`.")
-            self.options.character = Character.option_fern
+        if self.options.character.value == Character.option_maya or self.options.character.value == Character.option_ameli:
+            raise OptionError(f"Invalid options for Rusted Moss player {self.player_name}.\n"
+                               "Playing as Maya or Ameli is not supported with this APWorld. Valid character options are Fern or Gimmick.")
 
     def create_regions(self) -> None:
         regions: Dict[str, Region] = {}

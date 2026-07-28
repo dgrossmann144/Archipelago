@@ -44,10 +44,11 @@ item_locations: dict[str, tuple[int, list[str]]] = {
     "Fae_of_Glass": (ItemClassification.useful, ["Lake Fae of Glass"]),                         #31
     "Titanias_Protection": (ItemClassification.useful, ["Smoked Forest Titania's Protection"]), #32
     "Energy_Disruptor": (ItemClassification.progression, ["Snowy Outpost Energy Disruptor"]),   #33
-    "Energy_Converter": (ItemClassification.progression, ["Sunken Library Energy Converter"]),  #34
-    "Soft_Fae": (ItemClassification.progression, ["Tundra Temple Soft Fae"]),                   #35
-    "Glass_Coin": (ItemClassification.useful, ["Temple of Wild Dance Glass Coin"]),             #36
-    "Mossy_Wings": (ItemClassification.progression, ["Court of Ash Mossy Wings"]),              #37
+    # Items 34-37 are DLC and are not implemented yet
+    # "Energy_Converter": (ItemClassification.progression, ["Sunken Library Energy Converter"]),  #34
+    # "Soft_Fae": (ItemClassification.progression, ["Tundra Temple Soft Fae"]),                   #35
+    # "Glass_Coin": (ItemClassification.useful, ["Temple of Wild Dance Glass Coin"]),             #36
+    # "Mossy_Wings": (ItemClassification.progression, ["Court of Ash Mossy Wings"]),              #37
     "Grappling_Hook": (ItemClassification.progression, ["Flatlands Grappling Hook", "Living Quarters Grappling Hook Upgrade", "Elfame Infinite Grapple"]), #38 38-40
     "Charge_Jump": (ItemClassification.progression, ["Factory Roof Charge Jump"]),                                                                         #39 41
     "Grenade": (ItemClassification.progression, ["Snowy Outpost Grenade"]),                                                                                #40 42
