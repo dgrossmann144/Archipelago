@@ -40,7 +40,7 @@ class RustedMossWorld(World):
     # Location: Region for locations that only have one connection
     location_to_region: ClassVar[dict[str, str]] = {}
     # Event names
-    events: ClassVar[set[str]] = set()
+    events: ClassVar[list[str]] = list()
     # Extracted rule definitions {(parent, spot, character), rule_string} where spot may be a Location, Region, or Event
     rules: ClassVar[dict[tuple[str, str, int], str]] = {}
 
