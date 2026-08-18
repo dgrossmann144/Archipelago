@@ -6,7 +6,7 @@ from .Options import Character
 
 def extract_logic():
     # Event names
-    events: set[str] = set()
+    events: list[str] = list()
     # Location/Region: access rule logic
     rules: dict[tuple[str, str, int], str] = {}
 
@@ -23,7 +23,7 @@ def extract_logic():
     return (events, rules)
 
 
-def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set[str], logic_file: str, character: int):
+def extract_logic_file(rules: dict[tuple[str, str, int], str], events: list[str], logic_file: str, character: int):
     def add_rule(parent: str, spot: str, rule: str):
         """
         Joins a new rule + parent with potential existing rules
@@ -56,8 +56,8 @@ def extract_logic_file(rules: dict[tuple[str, str, int], str], events: set[str],
         if line["from"] == "from":
             continue
         assert line["from"] != line["to"], f"self-referential: {line['from']}"
-        if line["to"].startswith("e_"):
-            events.add(line["to"])
+        if line["to"].startswith("e_") and line["to"] not in events:
+            events.append(line["to"])
 
         requires = line["requires"]
         if character == Character.option_gimmick:
